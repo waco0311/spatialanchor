@@ -2,6 +2,7 @@
 
 An add-on mod for Create Aeronautics (Simulated) that **completely locks** an airship at the coordinates where it was activated.
 
+This mod uses AI.
 ---
 
 ## Overview

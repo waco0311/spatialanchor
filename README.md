@@ -2,6 +2,7 @@
 
 Create Aeronautics（Simulated）の飛行船を、起動した瞬間の座標に**完全固定**するアドオン Mod です。
 
+このMODはAIを使用しています。
 ---
 
 ## 概要
