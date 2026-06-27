@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "active=false,facing=up":    { "model": "spatialanchor:block/spatial_anchor",        "y": 0   },
+    "active=false,facing=down":  { "model": "spatialanchor:block/spatial_anchor",        "x": 180 },
+    "active=false,facing=north": { "model": "spatialanchor:block/spatial_anchor",        "x": 90  },
+    "active=false,facing=south": { "model": "spatialanchor:block/spatial_anchor",        "x": 90, "y": 180 },
+    "active=false,facing=east":  { "model": "spatialanchor:block/spatial_anchor",        "x": 90, "y": 90  },
+    "active=false,facing=west":  { "model": "spatialanchor:block/spatial_anchor",        "x": 90, "y": 270 },
+    "active=true,facing=up":     { "model": "spatialanchor:block/spatial_anchor_active", "y": 0   },
+    "active=true,facing=down":   { "model": "spatialanchor:block/spatial_anchor_active", "x": 180 },
+    "active=true,facing=north":  { "model": "spatialanchor:block/spatial_anchor_active", "x": 90  },
+    "active=true,facing=south":  { "model": "spatialanchor:block/spatial_anchor_active", "x": 90, "y": 180 },
+    "active=true,facing=east":   { "model": "spatialanchor:block/spatial_anchor_active", "x": 90, "y": 90  },
+    "active=true,facing=west":   { "model": "spatialanchor:block/spatial_anchor_active", "x": 90, "y": 270 }
+  }
+}

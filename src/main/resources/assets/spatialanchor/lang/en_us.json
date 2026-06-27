@@ -1,0 +1,11 @@
+{
+  "block.spatialanchor.spatial_anchor": "Spatial Anchor",
+  "force_group.spatialanchor.spatial_anchor": "Spatial Anchor",
+  "force_group.spatialanchor.spatial_anchor.desc": "Restoring force toward anchor position",
+  "item.spatialanchor.spatial_anchor.tooltip.hold": "[Shift] for details",
+  "item.spatialanchor.spatial_anchor.tooltip.line1": "Holds an airship at its activation coordinates.",
+  "item.spatialanchor.spatial_anchor.tooltip.line2": "Activates when supplied with rotation (stress).",
+  "item.spatialanchor.spatial_anchor.tooltip.line3": "Requires at least 64 RPM to activate.",
+  "item.spatialanchor.spatial_anchor.tooltip.line4": "Required stress scales with ship weight.",
+  "item.spatialanchor.spatial_anchor.tooltip.line5": "Releases automatically if stress is insufficient."
+}

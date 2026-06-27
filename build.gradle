@@ -1,0 +1,195 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.141'
+    id 'idea'
+}
+
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+version = mod_version
+group = mod_group_id
+
+sourceSets.main.resources {
+    srcDir('src/generated/resources')
+    exclude("**/*.bbmodel")
+    exclude("src/generated/**/.cache")
+}
+
+// ── リポジトリ ─────────────────────────────────────────────────────────────
+repositories {
+    // Create / Ponder / Flywheel
+    maven {
+        name = "CreateMaven"
+        url  = "https://maven.createmod.net"
+    }
+
+    // Registrate
+    maven {
+        name = "IThundxr"
+        url  = "https://maven.ithundxr.dev/snapshots"
+    }
+
+    // Sable Companion (公式の外部 mod 向け API)
+    maven {
+        name = "RyanHCode Maven"
+        url  = "https://maven.ryanhcode.dev/releases"
+    }
+
+    // Sable 本体 (CurseMaven)
+    maven {
+        name = "CurseMaven"
+        url  = "https://www.cursemaven.com"
+    }
+
+    // Veil maven (BlameJared)
+    maven {
+        name = "BlameJared"
+        url  = "https://maven.blamejared.com"
+    }
+
+    // Create Aeronautics (Modrinth Maven)
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url  = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
+}
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    // Access Transformer (Create の内部フィールドアクセスに必要)
+    accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all',
+                '--output', file('src/generated/resources/').getAbsolutePath(),
+                '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+// ── 依存関係 ──────────────────────────────────────────────────────────────
+dependencies {
+    // Create 6.x — 公式推奨: :slim + transitive=false で余計な依存を引かない
+    implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") {
+        transitive = false
+    }
+
+    // Ponder (Create の依存、明示的に追加が必要)
+    implementation "net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}"
+
+    // Flywheel — グループIDは engine-room (ハイフン) が正しい
+    compileOnly "dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}"
+    runtimeOnly "dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}"
+
+    // Registrate (Create の依存)
+    implementation "com.tterrag.registrate:Registrate:${registrate_version}"
+
+    // Sable 本体 2.0.3 (速度付与などの内部 API 用)
+    implementation "curse.maven:sable-1312371:${sable_curse_file_id}"
+
+    // Sable Companion: コンパイル時のみ。
+    // 実行時は Sable 本体 2.0.3 が内包する Companion が使われる（jarJar はしない）
+    compileOnly "dev.ryanhcode.sable-companion:sable-companion-common-${minecraft_version}:${sable_companion_version}"
+
+    // Veil (Sable の依存。RegistrationProvider に必要)
+    compileOnly "foundry.veil:veil-neoforge-${minecraft_version}:${veil_version}"
+
+    // Create Aeronautics
+    // version 文字列でダメな場合は version ID を使う（例: maven.modrinth:create-aeronautics:YhZLrAFC）
+    implementation "maven.modrinth:create-aeronautics:${aeronautics_version}"
+}
+
+// ── mod メタデータ生成 ────────────────────────────────────────────────────
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+        minecraft_version      : minecraft_version,
+        minecraft_version_range: minecraft_version_range,
+        neo_version            : neo_version,
+        loader_version_range   : loader_version_range,
+        mod_id                 : mod_id,
+        mod_name               : mod_name,
+        mod_license            : mod_license,
+        mod_version            : mod_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

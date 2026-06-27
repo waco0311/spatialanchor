@@ -1,0 +1,9 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "particle": "spatialanchor:block/spatial_anchor_side",
+    "top":    "spatialanchor:block/spatial_anchor_top",
+    "bottom": "spatialanchor:block/spatial_anchor_bottom",
+    "side":   "spatialanchor:block/spatial_anchor_side"
+  }
+}

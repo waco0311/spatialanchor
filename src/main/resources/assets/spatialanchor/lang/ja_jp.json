@@ -1,0 +1,11 @@
+{
+  "block.spatialanchor.spatial_anchor": "空間アンカー",
+  "force_group.spatialanchor.spatial_anchor": "空間アンカー",
+  "force_group.spatialanchor.spatial_anchor.desc": "アンカー座標への復元力",
+  "item.spatialanchor.spatial_anchor.tooltip.hold": "[Shift] で詳細",
+  "item.spatialanchor.spatial_anchor.tooltip.line1": "飛行船を起動時の座標に固定する。",
+  "item.spatialanchor.spatial_anchor.tooltip.line2": "回転（応力）を供給すると起動。",
+  "item.spatialanchor.spatial_anchor.tooltip.line3": "起動には 64 RPM 以上の回転が必要。",
+  "item.spatialanchor.spatial_anchor.tooltip.line4": "必要応力は船の重さに比例。",
+  "item.spatialanchor.spatial_anchor.tooltip.line5": "応力不足で自動解除。"
+}
