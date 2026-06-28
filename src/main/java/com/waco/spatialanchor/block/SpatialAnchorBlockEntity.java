@@ -131,7 +131,7 @@ public class SpatialAnchorBlockEntity extends KineticBlockEntity {
                 SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.BLOCKS,
                 1.0f, 1.0f);
 
-        SpatialAnchorMod.LOGGER.info(
+        SpatialAnchorMod.LOGGER.debug(
                 "[SpatialAnchor] Activated at {}. Anchor pos: {}", worldPosition, anchorWorldPos);
         setChanged();
     }
@@ -269,7 +269,7 @@ public class SpatialAnchorBlockEntity extends KineticBlockEntity {
     }
 
     private void broadcastStressInsufficient() {
-        SpatialAnchorMod.LOGGER.warn(
+        SpatialAnchorMod.LOGGER.debug(
                 "[SpatialAnchor] Anchor at {} released due to insufficient stress!", worldPosition);
     }
 

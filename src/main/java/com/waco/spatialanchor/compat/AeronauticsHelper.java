@@ -138,7 +138,7 @@ public class AeronauticsHelper {
                             subLevel.logicalPose().orientation()
                     ));
 
-            SpatialAnchorMod.LOGGER.info("[AeronauticsHelper] Anchor constraint created at {}", anchorPos);
+            SpatialAnchorMod.LOGGER.debug("[AeronauticsHelper] Anchor constraint created at {}", anchorPos);
             return handle;
 
         } catch (Exception e) {
