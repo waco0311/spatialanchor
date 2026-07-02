@@ -314,9 +314,12 @@ public class SpatialAnchorBlockEntity extends KineticBlockEntity {
     public Vec3 getAnchorPos()      { return anchorWorldPos; }
     public float getShipWeight()    { return cachedShipWeight; }
 
-    /** このアンカーブロックの現在ワールド座標を返す（Display Link 用）。 */
+    /**
+     * このアンカーブロックの現在ワールド座標を返す（Display Link 用）。
+     * アクティブ状態に関わらず取得できる。level が無い場合のみ null。
+     */
     public Vec3 getCurrentWorldPos() {
-        if (!active || level == null) return null;
+        if (level == null) return null;
         return AeronauticsHelper.getBlockWorldPos(level, worldPosition);
     }
 }
