@@ -7,5 +7,18 @@
   "item.spatialanchor.spatial_anchor.tooltip.line2": "Activates when supplied with rotation (stress).",
   "item.spatialanchor.spatial_anchor.tooltip.line3": "Requires at least 64 RPM to activate.",
   "item.spatialanchor.spatial_anchor.tooltip.line4": "Required stress scales with ship weight.",
-  "item.spatialanchor.spatial_anchor.tooltip.line5": "Releases automatically if stress is insufficient."
+  "item.spatialanchor.spatial_anchor.tooltip.line5": "Releases automatically if stress is insufficient.",
+  "goggles.spatialanchor.header": "Spatial Anchor",
+  "goggles.spatialanchor.active": "Active",
+  "goggles.spatialanchor.inactive": "Inactive (%s)",
+  "goggles.spatialanchor.reason.not_on_ship": "Not on an airship",
+  "goggles.spatialanchor.reason.overstressed": "Insufficient stress",
+  "goggles.spatialanchor.reason.low_speed": "Too slow: %s/%s RPM",
+  "goggles.spatialanchor.reason.standby": "Standby",
+  "goggles.spatialanchor.anchor_pos": "Anchor: %s",
+  "goggles.spatialanchor.ship_weight": "Ship weight: %s",
+  "goggles.spatialanchor.required_stress": "Required stress: %s su",
+  "spatialanchor.display_source.spatial_anchor_status": "Anchor Status",
+  "spatialanchor.display_source.spatial_anchor_position": "Anchor Position",
+  "spatialanchor.display_source.spatial_anchor_weight": "Ship Weight"
 }

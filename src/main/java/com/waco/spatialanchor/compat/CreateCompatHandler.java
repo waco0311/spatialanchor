@@ -26,18 +26,25 @@ public class CreateCompatHandler {
     private CreateCompatHandler() {}
 
     // ── Display Source（onRegisterAfter で安全なタイミングに紐付け）─────────
-    public static final RegistryEntry<DisplaySource, SpatialAnchorDisplaySource> SPATIAL_ANCHOR_STATUS =
-            SpatialAnchorRegistrate.REGISTRATE
-                    .displaySource("spatial_anchor_status", SpatialAnchorDisplaySource::new)
-                    .onRegisterAfter(Registries.BLOCK_ENTITY_TYPE, source -> {
-                        // このコールバックの時点では BLOCK_ENTITY_TYPE レジストリが
-                        // 確定済みなので、安全に .get() できる。
-                        BlockEntityType<?> type = ModBlockEntities.SPATIAL_ANCHOR.get();
-                        DisplaySource.BY_BLOCK_ENTITY.add(type, source);
-                        SpatialAnchorMod.LOGGER.debug(
-                                "[SpatialAnchor] Display source associated with block entity type.");
-                    })
-                    .register();
+    // 稼働状態 / 座標 / 重量 の3ソースを個別に登録する。
+    public static final RegistryEntry<DisplaySource, SpatialAnchorDisplaySource> STATUS =
+            registerSource("spatial_anchor_status", SpatialAnchorDisplaySource.Kind.STATUS);
+    public static final RegistryEntry<DisplaySource, SpatialAnchorDisplaySource> POSITION =
+            registerSource("spatial_anchor_position", SpatialAnchorDisplaySource.Kind.POSITION);
+    public static final RegistryEntry<DisplaySource, SpatialAnchorDisplaySource> WEIGHT =
+            registerSource("spatial_anchor_weight", SpatialAnchorDisplaySource.Kind.WEIGHT);
+
+    private static RegistryEntry<DisplaySource, SpatialAnchorDisplaySource> registerSource(
+            String name, SpatialAnchorDisplaySource.Kind kind) {
+        return SpatialAnchorRegistrate.REGISTRATE
+                .displaySource(name, () -> new SpatialAnchorDisplaySource(kind))
+                .onRegisterAfter(Registries.BLOCK_ENTITY_TYPE, source -> {
+                    // この時点で BLOCK_ENTITY_TYPE レジストリは確定済みなので .get() できる
+                    BlockEntityType<?> type = ModBlockEntities.SPATIAL_ANCHOR.get();
+                    DisplaySource.BY_BLOCK_ENTITY.add(type, source);
+                })
+                .register();
+    }
 
     public static void registerStressEntries() {
         // KineticBlockEntity のオーバーライドで自動登録されるため追加不要
@@ -50,7 +57,7 @@ public class CreateCompatHandler {
      */
     public static void registerDisplaySources() {
         SpatialAnchorMod.LOGGER.debug(
-                "[SpatialAnchor] Display source 'spatial_anchor_status' class-loaded (id={}).",
-                SPATIAL_ANCHOR_STATUS.getId());
+                "[SpatialAnchor] Display sources class-loaded ({}, {}, {}).",
+                STATUS.getId(), POSITION.getId(), WEIGHT.getId());
     }
 }

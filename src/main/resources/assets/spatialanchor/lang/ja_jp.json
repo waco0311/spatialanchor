@@ -7,5 +7,18 @@
   "item.spatialanchor.spatial_anchor.tooltip.line2": "回転（応力）を供給すると起動。",
   "item.spatialanchor.spatial_anchor.tooltip.line3": "起動には 64 RPM 以上の回転が必要。",
   "item.spatialanchor.spatial_anchor.tooltip.line4": "必要応力は船の重さに比例。",
-  "item.spatialanchor.spatial_anchor.tooltip.line5": "応力不足で自動解除。"
+  "item.spatialanchor.spatial_anchor.tooltip.line5": "応力不足で自動解除。",
+  "goggles.spatialanchor.header": "空間アンカー",
+  "goggles.spatialanchor.active": "稼働中",
+  "goggles.spatialanchor.inactive": "停止中 (%s)",
+  "goggles.spatialanchor.reason.not_on_ship": "飛行船上にない",
+  "goggles.spatialanchor.reason.overstressed": "応力不足",
+  "goggles.spatialanchor.reason.low_speed": "回転不足: %s/%s RPM",
+  "goggles.spatialanchor.reason.standby": "待機中",
+  "goggles.spatialanchor.anchor_pos": "固定座標: %s",
+  "goggles.spatialanchor.ship_weight": "船重量: %s",
+  "goggles.spatialanchor.required_stress": "必要応力: %s su",
+  "spatialanchor.display_source.spatial_anchor_status": "アンカー稼働状態",
+  "spatialanchor.display_source.spatial_anchor_position": "アンカー座標",
+  "spatialanchor.display_source.spatial_anchor_weight": "船重量"
 }

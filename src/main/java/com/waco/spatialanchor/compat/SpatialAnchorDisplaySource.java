@@ -1,129 +1,72 @@
 package com.waco.spatialanchor.compat;
 
-import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
+import com.simibubi.create.content.redstone.displayLink.source.SingleLineDisplaySource;
 import com.simibubi.create.content.redstone.displayLink.target.DisplayTargetStats;
+import com.waco.spatialanchor.block.SpatialAnchorBlockEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import com.waco.spatialanchor.block.SpatialAnchorBlockEntity;
-
-import java.util.List;
 
 /**
- * Create Display Link 用のデータソース。
+ * Create Display Link 用のデータソース（1項目 = 1ソース）。
  *
- * <p>登録: {@link CreateCompatHandler#registerDisplaySources()} で
- * {@link SpatialAnchorRegistrate#REGISTRATE} 経由の
- * {@code displaySource(...).associate(...).register()} を呼ぶ。
- * （{@code DisplaySource.BY_BLOCK_ENTITY.add()} だけでは ID が null になり使用不可）</p>
+ * <p>Display Link の UI で以下の3つから選択できる:</p>
+ * <ul>
+ *   <li>{@link Kind#STATUS}   — online / offline</li>
+ *   <li>{@link Kind#POSITION} — アンカーブロックの現在ワールド座標 "x y z"</li>
+ *   <li>{@link Kind#WEIGHT}   — 船重量</li>
+ * </ul>
  *
- * <p>出力フォーマット (3行):</p>
- * <pre>
- *   行1: online  または  offline
- *   行2: アンカー座標  例: -128 64 300    (停止中は ---)
- *   行3: 現在座標      例: -127 64 299    (アクティブ状態に関わらず常に表示)
- * </pre>
+ * <p>{@link SingleLineDisplaySource} を継承しているので、ラベル付けや
+ * Nixie管・フラップディスプレイにもそのまま対応する。</p>
  */
-public class SpatialAnchorDisplaySource extends DisplaySource {
+public class SpatialAnchorDisplaySource extends SingleLineDisplaySource {
+
+    public enum Kind { STATUS, POSITION, WEIGHT }
 
     private static final String ONLINE  = "online";
     private static final String OFFLINE = "offline";
     private static final String NO_DATA = "---";
 
-    // ─────────────────────────────────────────────────────────────────────
-    // DisplaySource 実装
-    // ─────────────────────────────────────────────────────────────────────
+    private final Kind kind;
+
+    public SpatialAnchorDisplaySource(Kind kind) {
+        this.kind = kind;
+    }
 
     @Override
-    public List<MutableComponent> provideText(DisplayLinkContext context, DisplayTargetStats stats) {
-        BlockEntity be = context.getSourceBlockEntity();
-
-        if (!(be instanceof SpatialAnchorBlockEntity anchor)) {
-            return offlineResponse();
+    protected MutableComponent provideLine(DisplayLinkContext context, DisplayTargetStats stats) {
+        if (!(context.getSourceBlockEntity() instanceof SpatialAnchorBlockEntity anchor)) {
+            return Component.literal(kind == Kind.STATUS ? OFFLINE : NO_DATA);
         }
 
-        return List.of(
-                buildStatusLine(anchor),
-                buildAnchorPosLine(anchor),
-                buildCurrentPosLine(anchor)
-        );
+        return switch (kind) {
+            case STATUS -> Component.literal(anchor.isActive() ? ONLINE : OFFLINE);
+            case POSITION -> {
+                Vec3 pos = anchor.getCurrentWorldPos();
+                yield Component.literal(pos == null ? NO_DATA : formatVec3(pos));
+            }
+            case WEIGHT -> Component.literal(String.valueOf(Math.round(anchor.getShipWeight())));
+        };
     }
 
-    // ─────────────────────────────────────────────────────────────────────
-    // 各行のビルダー
-    // ─────────────────────────────────────────────────────────────────────
-
-    /** 行1: online / offline */
-    private MutableComponent buildStatusLine(SpatialAnchorBlockEntity anchor) {
-        return Component.literal(anchor.isActive() ? ONLINE : OFFLINE);
+    @Override
+    protected boolean allowsLabeling(DisplayLinkContext context) {
+        return true;
     }
 
-    /**
-     * 行2: アンカー固定座標
-     * <pre>
-     *   稼働中: -128 64 300
-     *   停止中: ---
-     * </pre>
-     */
-    private MutableComponent buildAnchorPosLine(SpatialAnchorBlockEntity anchor) {
-        if (!anchor.isActive()) return Component.literal(NO_DATA);
-        Vec3 pos = anchor.getAnchorPos();
-        if (pos == null)  return Component.literal(NO_DATA);
-        return Component.literal(formatVec3(pos));
+    /** 座標は頻繁に変わりうるので 1 秒ごとに更新。 */
+    @Override
+    public int getPassiveRefreshTicks() {
+        return 20;
     }
 
-    /**
-     * 行3: 現在座標（船の現在ワールド位置）
-     * <pre>
-     *   稼働中: -127 64 299
-     *   停止中: ---
-     * </pre>
-     */
-    /**
-     * 行3: 現在座標（アンカーブロックの現在ワールド座標）
-     * <pre>
-     *   稼働中/停止中とも: 実際の座標を表示
-     *   座標取得失敗時のみ: ---
-     * </pre>
-     */
-    private MutableComponent buildCurrentPosLine(SpatialAnchorBlockEntity anchor) {
-        Vec3 pos = anchor.getCurrentWorldPos();
-        if (pos == null) return Component.literal(NO_DATA);
-        return Component.literal(formatVec3(pos));
-    }
-
-    // ─────────────────────────────────────────────────────────────────────
-    // ユーティリティ
-    // ─────────────────────────────────────────────────────────────────────
-
-    /** Vec3 を "x y z" 形式の文字列に変換（小数点以下切り捨て）。 */
+    /** Vec3 を "x y z" 形式に変換（小数点以下切り捨て）。 */
     private static String formatVec3(Vec3 pos) {
         return String.format("%d %d %d",
                 (int) Math.floor(pos.x),
                 (int) Math.floor(pos.y),
                 (int) Math.floor(pos.z));
-    }
-
-    private static List<MutableComponent> offlineResponse() {
-        return List.of(
-                Component.literal(OFFLINE),
-                Component.literal(NO_DATA),
-                Component.literal(NO_DATA)
-        );
-    }
-
-    // ─────────────────────────────────────────────────────────────────────
-    // 更新頻度
-    // ─────────────────────────────────────────────────────────────────────
-
-    /**
-     * Display Link が自動更新する間隔 (tick)。
-     * デフォルト100tick(5秒)。座標は頻繁に変わりうるので短めに設定。
-     */
-    @Override
-    public int getPassiveRefreshTicks() {
-        return 20; // 1秒ごとに更新
     }
 }

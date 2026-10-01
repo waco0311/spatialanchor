@@ -5,8 +5,6 @@ import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -18,10 +16,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.LevelReader;
 
 
@@ -98,18 +94,6 @@ public class SpatialAnchorBlock extends KineticBlock implements IBE<SpatialAncho
         // FACING 方向と逆方向にシャフト接続口を持つ
         return face == state.getValue(FACING) ||
                 face == state.getValue(FACING).getOpposite();
-    }
-
-    // ── 右クリック: 状態確認 ─────────────────────────────────────────────
-    @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
-                                               Player player, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
-
-        return onBlockEntityUse(level, pos, be -> {
-            be.sendStatusMessage(player);
-            return InteractionResult.SUCCESS;
-        });
     }
 
     // ── ブロック破壊時: アンカー解除 ─────────────────────────────────────
