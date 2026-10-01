@@ -1,4 +1,11 @@
+<p align="center">
+  <img src="docs/spatial_anchor_icon.png" width="160" alt="Spatial Anchor">
+  <img src="docs/spatial_anchor_icon_active.png" width="160" alt="Spatial Anchor (active)">
+</p>
+
 # Spatial Anchor（空間アンカー）
+
+[English](README_en.md)
 
 Create Aeronautics（Simulated）の飛行船を、起動した瞬間の座標に**完全固定**するアドオン Mod です。
 
@@ -53,8 +60,21 @@ Create Aeronautics（Simulated）の飛行船を、起動した瞬間の座標�
 5. **解除**：回転を止めるか、応力が不足すると自動的に解除される
 
 ### 状態確認
-- アンカーを**右クリック**：稼働状況・固定座標・船重量・必要応力を表示
+- **エンジニアゴーグル**でアンカーを見る：以下を表示
+  - 稼働中 / 停止中（停止理由：飛行船上にない・応力不足・回転不足・待機中）
+  - 固定座標（稼働中のみ）
+  - 船重量・必要応力
+  - 応力インパクト（Create 標準表示）
 - アイテムを持って **Shift 長押し**：詳細説明を表示
+
+### Display Link 連携
+Display Link の情報源として以下の3つを選択できます（ラベル付け、ニキシー管・フラップディスプレイ対応）。
+
+| 情報源 | 表示内容 |
+|--------|----------|
+| アンカー稼働状態 | `online` / `offline` |
+| アンカー座標 | アンカーの現在ワールド座標 `x y z` |
+| 船重量 | 船の重量 |
 
 ---
 
@@ -76,10 +96,19 @@ Create Aeronautics（Simulated）の飛行船を、起動した瞬間の座標�
 | `stressPerWeightUnit` | 重量1単位あたりの応力 | 4.0 |
 | `minSpeed` | 起動に必要な最低回転速度 | 64 |
 | `maxSpeed` | 応力消費が頭打ちになる速度 | 256 |
+| `weightRecalcInterval` | 船重量の再計算間隔（tick） | 40 |
 
 例：`weightMultiplier = 2.0` にすると、必要応力が2倍になり難易度が上がります。
 
 ---
 
-## 既知の制限
-- Display Link 連携は未対応（今後のアップデートで対応予定）
+## 更新履歴
+
+### v0.2.0
+- 起動中の応力消費が応力ネットワークに反映されないバグを修正
+- 過負荷判定が点滅する問題、設置直後に 0 Su で起動する問題を修正
+- 状態表示を右クリック（チャット）からエンジニアゴーグルに変更
+- Display Link を「稼働状態 / 座標 / 重量」の3ソースに分割、表示名を追加
+
+### v0.1.0
+- 初回リリース

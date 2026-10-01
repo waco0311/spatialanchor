@@ -1,4 +1,11 @@
+<p align="center">
+  <img src="docs/spatial_anchor_icon.png" width="160" alt="Spatial Anchor">
+  <img src="docs/spatial_anchor_icon_active.png" width="160" alt="Spatial Anchor (active)">
+</p>
+
 # Spatial Anchor
+
+[日本語](README.md)
 
 An add-on mod for Create Aeronautics (Simulated) that **completely locks** an airship at the coordinates where it was activated.
 
@@ -53,8 +60,21 @@ Useful for stationary airship docking, fixed sky fortresses, and similar setups.
 5. **Release**: Stop the rotation, or the anchor releases automatically when stress is insufficient
 
 ### Status Check
-- **Right-click** the anchor: shows status, locked coordinates, ship weight, and required stress
+- Look at the anchor with **Engineer's Goggles** to see:
+  - Active / Inactive (reason: not on an airship, insufficient stress, too slow, standby)
+  - Anchor position (while active)
+  - Ship weight and required stress
+  - Stress impact (Create's standard display)
 - **Hold Shift** while hovering the item: shows detailed description
+
+### Display Link Integration
+Three Display Link sources are available (supports labels, Nixie Tubes and Flap Displays).
+
+| Source | Output |
+|--------|--------|
+| Anchor Status | `online` / `offline` |
+| Anchor Position | Current world position of the anchor `x y z` |
+| Ship Weight | Weight of the ship |
 
 ---
 
@@ -76,10 +96,19 @@ Required stress is **proportional to the ship's weight**. Heavier ships need mor
 | `stressPerWeightUnit` | Stress per unit of weight | 4.0 |
 | `minSpeed` | Minimum rotation speed to activate | 64 |
 | `maxSpeed` | Speed at which stress consumption caps | 256 |
+| `weightRecalcInterval` | Ship weight recalculation interval (ticks) | 40 |
 
 Example: Setting `weightMultiplier = 2.0` doubles the required stress, increasing difficulty.
 
 ---
 
-## Known Limitations
-- Display Link integration is not yet supported (planned for a future update)
+## Changelog
+
+### v0.2.0
+- Fixed stress consumption not being applied to the kinetic network while active
+- Fixed overstress flickering and activation at 0 su right after placement
+- Status display moved from right-click (chat) to Engineer's Goggles
+- Display Link split into three sources (Status / Position / Weight), added display names
+
+### v0.1.0
+- Initial release
