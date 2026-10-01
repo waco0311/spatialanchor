@@ -112,3 +112,8 @@ Example: Setting `weightMultiplier = 2.0` doubles the required stress, increasin
 
 ### v0.1.0
 - Initial release
+
+---
+
+## License
+[MIT License](LICENSE)
